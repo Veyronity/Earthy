@@ -14,21 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EarthyFabric implements ClientModInitializer {
-
     public static final String ID = "earthy";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ID);
     private static final String LOG_PREFIX = "[Earthy] ";
-
     public static final List<Module> MODULES = new ArrayList<>();
-
     private static EMCAPIClient api;
 
     @Override
     public void onInitializeClient() {
         Config.HANDLER.load();
-
-        api = new EMCAPIClient(new Server(Config.server.toLowerCase()));
+        api =  new EMCAPIClient(new Server(Config.server.toLowerCase()));
 
         registerModules(
                 AutoHUD.getInstance(),
@@ -38,15 +33,14 @@ public class EarthyFabric implements ClientModInitializer {
                 OverfishingWarning.getInstance(),
                 Session.getInstance()
         );
-
-        for (Module module : MODULES) {
-            module.enable();
-        }
     }
 
     private void registerModules(@NotNull Module... modules) {
         for (Module module : modules) {
-            if (!MODULES.contains(module)) MODULES.add(module);
+            if (!MODULES.contains(module)) {
+                MODULES.add(module);
+                module.launch();
+            }
         }
     }
 
@@ -55,6 +49,10 @@ public class EarthyFabric implements ClientModInitializer {
      */
     public static EMCAPIClient getAPI() {
         return api;
+    }
+
+    public static Logger getLogger() {
+        return LOGGER;
     }
 
     public static void logInfo(String msg) {

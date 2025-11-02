@@ -1,5 +1,6 @@
 package au.lupine.earthy.fabric.module;
 
+import au.lupine.earthy.fabric.EarthyFabric;
 import au.lupine.earthy.fabric.object.base.Module;
 import au.lupine.earthy.fabric.object.config.Config;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -9,10 +10,11 @@ import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.slf4j.Logger;
 
 public final class OverfishingWarning extends Module {
-
     private static OverfishingWarning instance;
+    private static final Logger logger = EarthyFabric.getLogger();
 
     private OverfishingWarning() {}
 
@@ -27,7 +29,10 @@ public final class OverfishingWarning extends Module {
 
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
             Session session = Session.getInstance();
-            if (!session.isPlayerOnEarthMC()) return;
+            if (!session.isPlayerOnEarthMC()) {
+                logger.warn("[Overfishing] Player not EMC!");
+                return;
+            }
 
             if (!Config.warnWhenOverfishing) return;
 
@@ -35,6 +40,7 @@ public final class OverfishingWarning extends Module {
             try {
                 component = audiences.asAdventure(message);
             } catch (Exception e) {
+                logger.warn("[ChatPreview] Exception in parsing Component: {}", e.getMessage());
                 return;
             }
 

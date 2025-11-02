@@ -45,13 +45,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public final class Inspector extends Module {
-
     private static Inspector instance;
-
     private static final KeyMapping INSPECT_KEY = KeyBindingHelper.registerKeyBinding(
             new KeyMapping("key.earthy.inspect", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, "category.earthy")
     );
-
     private static final List<String> HEAD_CATEGORIES = List.of("alphabet", "animals", "blocks", "decoration", "food-drinks", "humanoid", "humans", "miscellaneous", "monsters", "plants");
     private static final Map<String, HeadData> HEAD_MAP = new HashMap<>();
 
