@@ -38,7 +38,7 @@ public abstract class EditBoxMixin extends AbstractWidget {
             method = "renderWidget",
             at = @At("TAIL")
     )
-    private void inject(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci, @Local(ordinal = 6) int o) {
+    private void inject(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
         try {
             Session session = Session.getInstance();
             if (!session.isPlayerOnEarthMC()) return;

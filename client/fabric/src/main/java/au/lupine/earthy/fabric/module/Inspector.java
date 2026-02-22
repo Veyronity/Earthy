@@ -21,6 +21,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.commands.data.BlockDataAccessor;
 import net.minecraft.server.commands.data.DataAccessor;
 import net.minecraft.server.commands.data.EntityDataAccessor;
@@ -47,7 +48,7 @@ import java.util.function.Consumer;
 public final class Inspector extends Module {
     private static Inspector instance;
     private static final KeyMapping INSPECT_KEY = KeyBindingHelper.registerKeyBinding(
-            new KeyMapping("key.earthy.inspect", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, "category.earthy")
+            new KeyMapping("key.earthy.inspect", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("earthy", "category")))
     );
     private static final List<String> HEAD_CATEGORIES = List.of("alphabet", "animals", "blocks", "decoration", "food-drinks", "humanoid", "humans", "miscellaneous", "monsters", "plants");
     private static final Map<String, HeadData> HEAD_MAP = new HashMap<>();
