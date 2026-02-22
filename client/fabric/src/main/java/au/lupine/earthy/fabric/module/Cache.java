@@ -18,8 +18,6 @@ import java.util.concurrent.*;
 public final class Cache extends Module {
     private static Cache instance;
     private static final List<Player> CACHED_PLAYERS = new CopyOnWriteArrayList<>();
-    private static final List<Town> CACHED_TOWNS = new CopyOnWriteArrayList<>();
-    private static int votes = 5000;
     private static final Logger logger = EarthyFabric.getLogger();
 
     private Cache() {}
@@ -47,7 +45,6 @@ public final class Cache extends Module {
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             CACHED_PLAYERS.clear();
-            CACHED_TOWNS.clear();
         });
 
         Tickable.register(() -> {
@@ -80,35 +77,7 @@ public final class Cache extends Module {
         });
     }
 
-    private void updateCachedTowns() {
-        CompletableFuture.runAsync(() -> {
-            try {
-                List<Town> towns = EarthyFabric.getAPI().getAllTowns();
-
-                CACHED_TOWNS.clear();
-                CACHED_TOWNS.addAll(towns);
-            } catch (FailedRequestException ignored) {}
-        });
-    }
-
-    private void updateVotes() {
-        CompletableFuture.runAsync(() -> {
-            try {
-                ServerInfo server = EarthyFabric.getAPI().getServerInfo();
-                votes = server.getNumVotesRemaining();
-            } catch (FailedRequestException ignored) {}
-        });
-    }
-
     public List<Player> getCachedPlayers() {
         return CACHED_PLAYERS;
-    }
-
-    public static List<Town> getCachedTowns() {
-        return CACHED_TOWNS;
-    }
-
-    public static int getVotes() {
-        return votes;
     }
 }

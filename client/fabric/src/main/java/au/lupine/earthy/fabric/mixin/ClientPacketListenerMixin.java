@@ -38,7 +38,7 @@ public abstract class ClientPacketListenerMixin {
         CompletableFuture.runAsync(() -> {
             try {
                 Player player = EarthyFabric.getAPI().getPlayerByUUID(uuid);
-                players.add(player);
+                if (player != null) players.add(player);
             } catch (FailedRequestException ignored) {}
         });
     }
