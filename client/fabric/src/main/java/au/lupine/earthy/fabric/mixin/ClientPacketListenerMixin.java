@@ -30,15 +30,15 @@ public abstract class ClientPacketListenerMixin {
 
         if (action != ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER) return;
 
-        UUID uuid = playerInfo.getProfile().getId();
-
-        List<Player> players = Cache.getInstance().getCachedPlayers();
-        if (players.stream().map(Player::getUUID).anyMatch(currentUUID -> currentUUID.equals(uuid))) return;
+        UUID uuid = playerInfo.getProfile().id();
+        if (Cache.getPlayers().stream().map(Player::getUUID).anyMatch(currentUUID -> currentUUID.equals(uuid))) return;
 
         CompletableFuture.runAsync(() -> {
             try {
                 Player player = EarthyFabric.getAPI().getPlayerByUUID(uuid);
-                if (player != null) players.add(player);
+                if (player != null) {
+                    Cache.addPlayer(player.getName(), player);
+                }
             } catch (FailedRequestException ignored) {}
         });
     }

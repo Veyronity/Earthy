@@ -12,12 +12,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import org.slf4j.Logger;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public final class Cache extends Module {
     private static Cache instance;
-    private static final List<Player> CACHED_PLAYERS = new CopyOnWriteArrayList<>();
+    private static final Map<String, Player> CACHED_PLAYERS = new ConcurrentHashMap<>();
     private static final Logger logger = EarthyFabric.getLogger();
 
     private Cache() {}
@@ -65,19 +67,29 @@ public final class Cache extends Module {
             try {
                 List<Player> online = EarthyFabric.getAPI().getPlayersByUUIDs(cpl.getOnlinePlayers()
                         .stream()
-                        .map(player -> player.getProfile().getId())
+                        .map(player -> player.getProfile().id())
                         .toList()
                 );
 
                 CACHED_PLAYERS.clear();
-                CACHED_PLAYERS.addAll(online);
+                for (Player player : online) {
+                    CACHED_PLAYERS.put(player.getName(), player);
+                }
             } catch (FailedRequestException e) {
                 logger.warn("[Cache] FailedRequestException: {}", e.getMessage());
             }
         });
     }
 
-    public List<Player> getCachedPlayers() {
-        return CACHED_PLAYERS;
+    public static Collection<Player> getPlayers() {
+        return CACHED_PLAYERS.values();
+    }
+
+    public static Player getPlayer(String name) {
+        return CACHED_PLAYERS.get(name);
+    }
+
+    public static void addPlayer(String name, Player player) {
+        CACHED_PLAYERS.put(name, player);
     }
 }
