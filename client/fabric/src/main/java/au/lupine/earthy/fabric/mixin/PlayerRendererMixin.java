@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -32,7 +32,7 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
 
     @Inject(
             method = "submitNameTag(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
-            at = @At("TAIL")
+            at = @At("HEAD")
     )
     private void inject(AvatarRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera, CallbackInfo ci) {
         Session session = Session.getInstance();
@@ -47,12 +47,12 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
         Player player = Cache.getPlayer(name);
         if (player == null) return;
 
-        Component towny = MinecraftClientAudiences.of()
-                .asNative(createTownyComponent(player));
+        Component towny = MinecraftClientAudiences.of().asNative(createTownyComponent(player));
 
         poseStack.pushPose();
-        poseStack.translate(0.0D, 0.25D, 0.0D);
+
         poseStack.scale(0.75F, 0.75F, 0.75F);
+        poseStack.translate(0.0D, 0.6D, 0.0D);
 
         collector.submitNameTag(
                 poseStack,
@@ -66,6 +66,7 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
         );
 
         poseStack.popPose();
+        poseStack.translate(0D, 0.1225D, 0D);
     }
 
     @Unique
